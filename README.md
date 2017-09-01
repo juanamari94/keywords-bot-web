@@ -20,3 +20,14 @@ Poseerá una landing page invitando al usuario a instalarse Telegram y a hacer u
 Se podrán dar de alta varias palabras clave que lleven a un mismo valor, como tambièn borrar y modificarlas. Para permitir esta alta, baja y modificación se presentarán en una lista paginada que se almacenará en una base de datos no-relacional.
 
 Por una cuestión de seguridad la URL que presentará el bot poseerá un token aleatorio asignado específicamente a ese grupo para minimizar la ventana de oportunidad en la que usuarios que no pertenezcan al grupo puedan modificar las palabras clave. Otro mecanismo (bypasseable) de seguridad será incluir el User ID de Telegram como parámetro de la URL, la cual un usuario normal no puede determinar fácilmente.
+
+# Endpoints
+
+'GET /' -> Una landing page del bot y qué hace.
+** Authorization header obligatorio con un token para validar el usuario para los siguientes endpoints. **
+'GET /keys' ->  Valida que quien desea acceder pertenezca al grupo en cuestión. Entrega una vista de todas las palabras y claves pertenecientes al grupo.
+'POST /keys' -> Agrega un mapeo clave-valor a un cierto grupo.
+Content-Type: Application/JSON
+'PUT /keys/{id}' -> Actualiza un mapeo clave-valor de un cierto grupo.
+Content-Type: Application/JSON
+'DELETE /keys/{id}' -> Borra un mapeo clave-valor de un cierto grupo.
