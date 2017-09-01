@@ -23,22 +23,22 @@ Por una cuestión de seguridad la URL que presentará el bot poseerá un token a
 
 # Endpoints
 
-'GET /' -> Una landing page del bot y qué hace.
+`GET /` -> Una landing page del bot y qué hace.
 
 ** Authorization header obligatorio con un token para validar el usuario para los siguientes endpoints. **
 
-'GET /keys' ->  Valida que quien desea acceder pertenezca al grupo en cuestión. Entrega una vista de todas las palabras y claves 
+`GET /keys` ->  Valida que quien desea acceder pertenezca al grupo en cuestión. Entrega una vista de todas las palabras y claves 
 pertenecientes al grupo.
 
 
-'POST /keys' -> Agrega un mapeo clave-valor a un cierto grupo.
+`POST /keys` -> Agrega un mapeo clave-valor a un cierto grupo.
 
 Content-Type: Application/JSON
 
 
-'PUT /keys/{id}' -> Actualiza un mapeo clave-valor de un cierto grupo.
+`PUT /keys/{id}` -> Actualiza un mapeo clave-valor de un cierto grupo.
 
 Content-Type: Application/JSON
 
 
-'DELETE /keys/{id}' -> Borra un mapeo clave-valor de un cierto grupo.
+`DELETE /keys/{id}` -> Borra un mapeo clave-valor de un cierto grupo.
