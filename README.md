@@ -25,7 +25,7 @@ Por una cuestión de seguridad la URL que presentará el bot poseerá un token a
 
 `GET /` -> Una landing page del bot y qué hace.
 
-** Authorization header obligatorio con un token para validar el usuario para los siguientes endpoints. **
+**Authorization header obligatorio con un token para validar el usuario para los siguientes endpoints.**
 
 `GET /keys` ->  Valida que quien desea acceder pertenezca al grupo en cuestión. Entrega una vista de todas las palabras y claves 
 pertenecientes al grupo.
