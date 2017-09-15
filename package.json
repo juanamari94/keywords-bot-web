@@ -1,0 +1,26 @@
+{
+  "name": "memorybot-web",
+  "version": "0.0.0",
+  "description": "Aplicación web para la administración de palabras clave del bot KeywordsBot para grupos de la aplicación de chat [Telegram](http://telegram.org). Trabajo práctico de la materia Arquitectura Web.",
+  "main": "/app/server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "nodemon ./app/server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/juanamari94/memorybot-web.git"
+  },
+  "author": "Juan Amari",
+  "license": "BSD-2-Clause",
+  "bugs": {
+    "url": "https://github.com/juanamari94/memorybot-web/issues"
+  },
+  "devDependencies": {
+    "nodemon": "~1.12.1"
+  },
+  "dependencies": {
+    "body-parser": "^1.18.1",
+    "express": "^4.15.4"
+  }
+}
