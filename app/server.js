@@ -1,48 +1,89 @@
 const express = require('express');
 const bodyParser= require('body-parser');
 const app = express();
-const MongoClient = require('mongodb').MongoClient;
+const mongoose = require('mongoose');
 const utils = require('./utils/utils.js');
 const secrets = require('./secrets/secrets.js');
 
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(bodyParser.json());
+mongoose.connect(secrets.MONGO_URI);
 
-let db;
+let db = mongoose.connection;
 
-MongoClient.connect(secrets.MONGO_URI, (err, database) => {
-  if (err) return console.log(err);
-  db = database;
+let keywords_dict = {};
+
+let token_dict = {};
+
+db.on('error', console.error.bind('connection error:'));
+
+db.on('open', () => {
+  
   app.listen(3000, () => {
     console.log("Listening on port 3000");
   });
 });
 
 app.get('/', (req, res) => {
+  
   res.status(200).send("Index");
 });
 
-app.get('/keys', (req, res) => {
-  res.status(200).send("/keys");
-});
+app.post('/keywords', (req, res) => {
 
-app.get('/keys/:id', (req, res) => {
-  res.status(200).send("/keys" + req.params.id);
-});
+  if (req.hasOwnProperty("key") && token_dict[req.body.key] != undefined) {
 
-app.post('/keys', (req, res) => {
-});
+    let group_id = token_dict[req.body.key]
 
-app.post('/register', (req, res) => {
-  let body = req.body;
-  if (body.hasOwnProperty('group_id') && body.hasOwnProperty('timestamp')) {
-    let key = utils.hashKey(body.group_id + body.timestamp);
-    res.status(200).send(key);
-  } else {
-    res.status(400).send();
+    let key_value_pair = {
+      keyword: req.body.keyword,
+      value: req.body.value
+    }
+
+    if (keywords_dict[group_id] != undefined) {
+      
+      keywords_dict[group_id].push(key_value_pair);
+    } else {
+
+      keywords_dict[group_id] = [];
+      keywords_dict[group_id].push(key_value_pair);
+    }
   }
+
+  res.status(200).send();
 });
 
-app.delete('/keys/:id', (req, res) => {
+app.put('/keywords', (req, res) => {
+  
+  res.status(200).send();
+});
 
+app.delete('keywords', (req, res) => {
+  
+  res.status(200).send();
+});
+
+app.get('/keywords', (req, res) => {
+
+  if (req.query.hasOwnProperty("group_id") 
+      && req.query.hasOwnProperty('timestamp')) {
+
+    let key = utils.hashKey(req.query.group_id + req.query.timestamp + Math.random());
+    token_dict.key = key
+    token_dict.group_id = req.query.group_id
+    console.log(JSON.stringify(token_dict))
+
+    res.status(200).send(key);
+
+  } else {
+
+    if (token_dict.key != undefined) {
+
+      console.log(JSON.stringify(keywords_dict));
+      res.status(200).send(JSON.stringify(keywords_dict[req.query.key]));
+    } else {
+
+      res.status(404).send(req.query.key + " not found");
+    }
+  }
 });
