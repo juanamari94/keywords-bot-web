@@ -171,6 +171,10 @@ app.get('/keywords/:group_id', (req, res) => {
 
 app.post('/keywords/:group_id', (req, res) => {
 
+  if (!req.body.keyword || !req.body.value) {
+    return res.status(400).send();
+  }
+
   let key_value = {"keyword": req.body.keyword, "value": req.body.value};
 
   Group.findOne({group_id: req.params.group_id})
@@ -248,6 +252,10 @@ app.get('/keywords/:group_id/:keyword', (req, res) => {
 
 app.put('/keywords/:group_id', (req, res) => {
 
+  if (!req.body.keyword || !req.body.value) {
+    return res.status(400).send();
+  }
+
   const updated_entry = {"keyword": req.body.keyword, "value": req.body.value};
   
   Group.findOne({group_id: req.params.group_id})
@@ -277,5 +285,27 @@ app.put('/keywords/:group_id', (req, res) => {
 
 app.delete('/keywords/:group_id/:keyword', (req, res) => {
   
-  return res.status(200).send();
+  Group.findOne({group_id: req.params.group_id})
+  .then(group => {
+
+    const entryIndex = group.keyword_map.findIndex((entry) => entry.keyword == req.params.keyword);
+
+    if (entryIndex != -1) {
+
+      const removed_element = group.keyword_map.splice(entryIndex, 1);
+
+      group.save()
+      .then(() => {
+
+        return res.status(200).send();
+      }).catch((err) => {
+
+        console.error(err.message);
+        return res.status(500).send();
+      });
+    } else {
+
+      return res.status(404).send();
+    }
+  });
 });
