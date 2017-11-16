@@ -224,11 +224,6 @@ app.post('/keywords/:group_id', (req, res) => {
 });
 
 app.get('/keywords/:group_id/:keyword', (req, res) => {
-
-  if (req.headers.api_key != secrets.API_KEY) {
-    
-    return res.status(401).send("Invalid API Key.");
-  }
   
   const group_id = req.params.group_id;
   const requested_keyword = req.params.keyword;
