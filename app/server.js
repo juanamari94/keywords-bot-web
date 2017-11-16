@@ -131,6 +131,32 @@ app.put('/token/:group_id', (req, res) => {
   });
 });
 
+app.all('/keywords/:group_id*', (req, res, next) => {
+
+  if (req.headers.api_key == undefined || req.headers.auth_token == undefined) {
+
+    return res.status(400).send();
+  }
+
+  redis_client.get(req.params.group_id, (err, token_reply) => {
+
+    if (err) {
+      
+      console.error(err)
+      return res.status(500).send();
+    } else {
+
+      if (req.headers.auth_token == token_reply) {
+
+        next();
+      } else {
+
+        res.status(401).send();
+      }
+    }
+  });
+});
+
 app.get('/keywords/:group_id', (req, res) => {
 
   Group.find({group_id: req.params.group_id}).then(group => {
