@@ -131,49 +131,91 @@ app.put('/token/:group_id', (req, res) => {
   });
 });
 
-app.all('/keywords/:group_id', (req, res, next) => {
-
-  if (req.headers.token == undefined) {
-
-    return res.status(401).send("Group token missing."); 
-  } else if (token_dict[req.params.group_id] == undefined) {
-    
-    return res.status(404).send("Group does not exist");
-  } else if (token_dict[req.params.group_id] != req.headers.token) {
-
-    return res.status(401).send("Tokens do not match.");
-  }
-
-  next();
-});
-
 app.get('/keywords/:group_id', (req, res) => {
 
   Group.find({group_id: req.params.group_id}).then(group => {
 
-    res.status(200).send(group);
+    return res.status(200).send(group);
   }).catch(err => {
 
-    throw err;
+    console.error(err.message);
+    return res.status(500).send();
+  });
+});
+
+app.post('/keywords/:group_id', (req, res) => {
+
+  let key_value = {"keyword": req.body.keyword, "value": req.body.value};
+
+  Group.findOne({group_id: req.params.group_id})
+  .then((group) => {
+
+    console.log(JSON.stringify(group));
+
+    if (group.keyword_map == undefined) {
+
+      console.log(group.group_id);
+      const group_query = Group({
+        group_id: group.group_id,
+        keyword_map: [
+          key_value
+        ]
+      });
+
+      group_query.save().then(() => {
+
+        return res.status(200).send();
+      }).catch((err) => {
+
+        console.error(err.message);
+        return res.status(500).send();
+      });
+    } else {
+
+      if (group.keyword_map.find((entry) => entry.keyword == key_value.keyword) == undefined) {
+        
+        group.keyword_map.push(key_value);
+        
+          group.save().then(() => {
+    
+            return res.status(200).send();
+          }).catch((err) => {
+    
+            console.error(err.message);
+            return res.status(500).send();
+          });
+        } else {
+        
+          return res.status(403).send("Keyword already exists");
+        }
+      }
+
+  }).catch((err) => {
+
+    console.error(err);
+    return res.status(404).send();
   });
 });
 
 app.get('/keywords/:group_id/:keyword', (req, res) => {
+
+  if (req.headers.api_key != secrets.API_KEY) {
+    
+    return res.status(401).send("Invalid API Key.");
+  } 
   
   let group_id = req.params.group_id;
   let requested_keyword = req.params.keyword;
-  let group_id_keywords = groups.find(group => group.group_id == group_id);
-  let keyword = group_id_keywords.keywords_map.find(keyword => keyword.key == requested_keyword);
 
-  console.log(keyword);
+  Group.find({group_id: group_id}).then(group => {
 
-  if (keyword == undefined) {
+    console.log(group);
+    return res.status(200).send();
+  }).catch(err => {
 
-    return res.status(404).send();
-  } else {
-
-    return res.status(200).send(keyword.value);
-  }
+    console.error(err.message);
+    return res.status(500).send();
+  });
 });
 
 app.put('/keywords/:group_id/:keyword', (req, res) => {
