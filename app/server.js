@@ -202,15 +202,22 @@ app.get('/keywords/:group_id/:keyword', (req, res) => {
   if (req.headers.api_key != secrets.API_KEY) {
     
     return res.status(401).send("Invalid API Key.");
-  } 
+  }
   
-  let group_id = req.params.group_id;
-  let requested_keyword = req.params.keyword;
+  const group_id = req.params.group_id;
+  const requested_keyword = req.params.keyword;
 
-  Group.find({group_id: group_id}).then(group => {
+  Group.findOne({group_id: group_id}).then(group => {
 
-    console.log(group);
-    return res.status(200).send();
+    const entry = group.keyword_map.find((entry) => entry.keyword == requested_keyword);
+
+    if (entry != undefined) {
+
+      return res.status(200).send(entry.value);
+    } else {
+
+      return res.status(404).send();
+    }
   }).catch(err => {
 
     console.error(err.message);
