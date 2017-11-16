@@ -133,7 +133,7 @@ app.put('/token/:group_id', (req, res) => {
 
 app.all('/keywords/:group_id*', (req, res, next) => {
 
-  if (req.headers.api_key == undefined || req.headers.auth_token == undefined) {
+  if (req.headers.auth_token == undefined) {
 
     return res.status(400).send();
   }
@@ -251,9 +251,33 @@ app.get('/keywords/:group_id/:keyword', (req, res) => {
   });
 });
 
-app.put('/keywords/:group_id/:keyword', (req, res) => {
+app.put('/keywords/:group_id', (req, res) => {
+
+  const updated_entry = {"keyword": req.body.keyword, "value": req.body.value};
   
-  return res.status(200).send();
+  Group.findOne({group_id: req.params.group_id})
+  .then(group => {
+
+    const entryIndex = group.keyword_map.findIndex((entry) => entry.keyword == updated_entry.keyword);
+
+    if (entryIndex != -1) {
+
+      group.keyword_map[entryIndex] = updated_entry;
+
+      group.save()
+      .then(() => {
+
+        return res.status(200).send();
+      }).catch((err) => {
+
+        console.error(err.message);
+        return res.status(500).send();
+      });
+    } else {
+
+      return res.status(404).send();
+    }
+  });
 });
 
 app.delete('/keywords/:group_id/:keyword', (req, res) => {
