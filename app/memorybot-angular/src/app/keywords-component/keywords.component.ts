@@ -44,9 +44,9 @@ export class KeywordsComponent implements OnInit {
     this.keywordEntriesService.deleteKeywordEntry(this.groupId, this.authToken, entry.keyword).subscribe(result => {
 
       if (result.response && result.response === 'SUCCESS') {
+        
         console.log("DELETE SUCCESSFUL");
-        let idx = this.keywordEntries.findIndex(entry => entry.keyword == entry.keyword);
-        console.log(idx);
+        let idx = this.keywordEntries.findIndex(containedEntry => containedEntry.keyword == entry.keyword);
         this.keywordEntries.splice(idx, 1);
       } else {
 
