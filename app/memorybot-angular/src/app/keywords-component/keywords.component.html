@@ -1,0 +1,28 @@
+<div class="add-entry">
+  <label>Add Keyword</label>
+  <br />
+  <input type="text" placeholder="keyword" #entryKeyword>
+  <input type="text" placeholder="value" #entryValue>
+  <button type="submit" (click)="onAddition(entryKeyword.value, entryValue.value)">Add!</button>
+</div>
+
+<br />
+
+<div *ngIf="selectedEntry">
+  <div>
+    <label>Modify <strong>{{selectedEntry.keyword}}'s</strong> value
+      <input [(ngModel)]="selectedEntry.value" placeholder="value">
+    </label>
+    <button (click)="onDelete(selectedEntry)">Delete</button>
+    <button (click)="onModify(selectedEntry)">Modify</button>
+  </div>
+</div>
+
+<br />
+
+<ul class="keywords">
+  <li *ngFor="let entry of keywordEntries" [class.selected]="entry === selectedEntry"
+  (click)="onSelect(entry)">
+    <span class="badge">{{entry.keyword}}</span> {{entry.value}}
+  </li>
+</ul>

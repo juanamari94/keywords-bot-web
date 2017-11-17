@@ -131,9 +131,9 @@ app.put('/api/token/:group_id', (req, res) => {
   });
 });
 
-app.all('/api/keywords/:group_id*', (req, res, next) => {
+app.all('/api/keywords/:group_id/:token*', (req, res, next) => {
 
-  if (req.headers.auth_token == undefined) {
+  if (req.params.token == undefined) {
 
     return res.status(400).send();
   }
@@ -146,7 +146,7 @@ app.all('/api/keywords/:group_id*', (req, res, next) => {
       return res.status(500).send();
     } else {
 
-      if (req.headers.auth_token == token_reply) {
+      if (req.params.token == token_reply) {
 
         next();
       } else {
@@ -157,11 +157,11 @@ app.all('/api/keywords/:group_id*', (req, res, next) => {
   });
 });
 
-app.get('/api/keywords/:group_id', (req, res) => {
+app.get('/api/keywords/:group_id/:token', (req, res) => {
 
-  Group.find({group_id: req.params.group_id}).then(group => {
+  Group.findOne({group_id: req.params.group_id}).then(group => {
 
-    return res.status(200).send(group);
+    return res.status(200).send(group.keyword_map);
   }).catch(err => {
 
     console.error(err.message);
@@ -169,9 +169,10 @@ app.get('/api/keywords/:group_id', (req, res) => {
   });
 });
 
-app.post('/api/keywords/:group_id', (req, res) => {
+app.post('/api/keywords/:group_id/:token', (req, res) => {
 
   if (!req.body.keyword || !req.body.value) {
+
     return res.status(400).send();
   }
 
@@ -180,11 +181,8 @@ app.post('/api/keywords/:group_id', (req, res) => {
   Group.findOne({group_id: req.params.group_id})
   .then((group) => {
 
-    console.log(JSON.stringify(group));
-
     if (group.keyword_map == undefined) {
 
-      console.log(group.group_id);
       const group_query = Group({
         group_id: group.group_id,
         keyword_map: [
@@ -194,7 +192,7 @@ app.post('/api/keywords/:group_id', (req, res) => {
 
       group_query.save().then(() => {
 
-        return res.status(200).send();
+        return res.status(200).send({response: "SUCCESS"});
       }).catch((err) => {
 
         console.error(err.message);
@@ -208,7 +206,7 @@ app.post('/api/keywords/:group_id', (req, res) => {
         
           group.save().then(() => {
     
-            return res.status(200).send();
+            return res.status(200).send({response: "SUCCESS"});
           }).catch((err) => {
     
             console.error(err.message);
@@ -227,10 +225,12 @@ app.post('/api/keywords/:group_id', (req, res) => {
   });
 });
 
-app.get('/api/keywords/:group_id/:keyword', (req, res) => {
+app.get('/api/keywords/:group_id/:token/:keyword', (req, res) => {
   
   const group_id = req.params.group_id;
+  console.log(group_id);
   const requested_keyword = req.params.keyword;
+  console.log(requested_keyword);
 
   Group.findOne({group_id: group_id}).then(group => {
 
@@ -250,7 +250,7 @@ app.get('/api/keywords/:group_id/:keyword', (req, res) => {
   });
 });
 
-app.put('/api/keywords/:group_id', (req, res) => {
+app.put('/api/keywords/:group_id/:token', (req, res) => {
 
   if (!req.body.keyword || !req.body.value) {
     return res.status(400).send();
@@ -270,7 +270,7 @@ app.put('/api/keywords/:group_id', (req, res) => {
       group.save()
       .then(() => {
 
-        return res.status(200).send();
+        return res.status(200).send(updated_entry);
       }).catch((err) => {
 
         console.error(err.message);
@@ -283,7 +283,7 @@ app.put('/api/keywords/:group_id', (req, res) => {
   });
 });
 
-app.delete('/api/keywords/:group_id/:keyword', (req, res) => {
+app.delete('/api/keywords/:group_id/:token/:keyword', (req, res) => {
   
   Group.findOne({group_id: req.params.group_id})
   .then(group => {
@@ -297,7 +297,7 @@ app.delete('/api/keywords/:group_id/:keyword', (req, res) => {
       group.save()
       .then(() => {
 
-        return res.status(200).send();
+        return res.status(200).send({response: "SUCCESS"});
       }).catch((err) => {
 
         console.error(err.message);
@@ -308,8 +308,4 @@ app.delete('/api/keywords/:group_id/:keyword', (req, res) => {
       return res.status(404).send();
     }
   });
-});
-
-app.get('/keywords/:group_id', (req, res) => {
-  res.status(200).send("keywords");
 });
