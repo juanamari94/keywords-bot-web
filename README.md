@@ -1,4 +1,4 @@
-# keywords-bot-web
+# memorybot-web
 Aplicación web para la administración de palabras clave del bot KeywordsBot para grupos de la aplicación de chat [Telegram](http://telegram.org). Trabajo práctico de la materia Arquitectura Web.
 
 # Integrantes
