@@ -40,7 +40,7 @@ app.get('/', (req, res) => {
   return res.status(200).send("Index");
 });
 
-app.all('/token', (req, res, next) => {
+app.all('/api/token', (req, res, next) => {
 
   if (req.headers.api_key != secrets.API_KEY) {
     
@@ -51,7 +51,7 @@ app.all('/token', (req, res, next) => {
   }
 });
 
-app.get('/token/:group_id', (req, res) => {
+app.get('/api/token/:group_id', (req, res) => {
 
   let group_id = req.params.group_id;
 
@@ -67,7 +67,7 @@ app.get('/token/:group_id', (req, res) => {
   });
 });
 
-app.post('/token', (req, res) => {
+app.post('/api/token', (req, res) => {
 
   if (req.body.group_id == undefined) {
     return res.status(400).send();
@@ -102,7 +102,7 @@ app.post('/token', (req, res) => {
   });
 });
 
-app.put('/token/:group_id', (req, res) => {
+app.put('/api/token/:group_id', (req, res) => {
   
   const group_id = req.params.group_id;
 
@@ -131,7 +131,7 @@ app.put('/token/:group_id', (req, res) => {
   });
 });
 
-app.all('/keywords/:group_id*', (req, res, next) => {
+app.all('/api/keywords/:group_id*', (req, res, next) => {
 
   if (req.headers.auth_token == undefined) {
 
@@ -157,7 +157,7 @@ app.all('/keywords/:group_id*', (req, res, next) => {
   });
 });
 
-app.get('/keywords/:group_id', (req, res) => {
+app.get('/api/keywords/:group_id', (req, res) => {
 
   Group.find({group_id: req.params.group_id}).then(group => {
 
@@ -169,7 +169,7 @@ app.get('/keywords/:group_id', (req, res) => {
   });
 });
 
-app.post('/keywords/:group_id', (req, res) => {
+app.post('/api/keywords/:group_id', (req, res) => {
 
   if (!req.body.keyword || !req.body.value) {
     return res.status(400).send();
@@ -227,7 +227,7 @@ app.post('/keywords/:group_id', (req, res) => {
   });
 });
 
-app.get('/keywords/:group_id/:keyword', (req, res) => {
+app.get('/api/keywords/:group_id/:keyword', (req, res) => {
   
   const group_id = req.params.group_id;
   const requested_keyword = req.params.keyword;
@@ -250,7 +250,7 @@ app.get('/keywords/:group_id/:keyword', (req, res) => {
   });
 });
 
-app.put('/keywords/:group_id', (req, res) => {
+app.put('/api/keywords/:group_id', (req, res) => {
 
   if (!req.body.keyword || !req.body.value) {
     return res.status(400).send();
@@ -283,7 +283,7 @@ app.put('/keywords/:group_id', (req, res) => {
   });
 });
 
-app.delete('/keywords/:group_id/:keyword', (req, res) => {
+app.delete('/api/keywords/:group_id/:keyword', (req, res) => {
   
   Group.findOne({group_id: req.params.group_id})
   .then(group => {
@@ -308,4 +308,8 @@ app.delete('/keywords/:group_id/:keyword', (req, res) => {
       return res.status(404).send();
     }
   });
+});
+
+app.get('/keywords/:group_id', (req, res) => {
+  res.status(200).send("keywords");
 });
