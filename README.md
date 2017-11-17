@@ -38,10 +38,6 @@ Content-Type: Application/JSON
 
 `PUT /api/token/:group_id` -> Actualiza un token clave-valor para un cierto grupo `group_id`.
 
-Content-Type: Application/JSON
-
-
-`DELETE /keys/{id}` -> Borra un mapeo clave-valor de un cierto grupo.
 
 ------
 
@@ -49,20 +45,9 @@ Content-Type: Application/JSON
 
 **Todas las API calls validan el token que se envía antes de realizar su funcionalidad.**
 
-GET `/api/keywords/:group_id/:token` -> Busca y retorna el mapa de palabras clave -> valor para un grupo.
+`GET /api/keywords/:group_id/:token` -> Busca y retorna el mapa de palabras clave -> valor para un grupo.
 
-POST `/api/keywords/:group_id/:token` -> Crea un mapa palabras clave -> valor de no existir con la entrada enviada a través del body, el cual es validado. De ya existir el mapa, simplemente agrega a éste la entrada. Si ya existe el mapeo que intenta agregar retorna un Error 403. El body debe ser de la forma:
-
-```javascript
-{
-    keyword: 'keyword value',
-    value: 'value'
-}
-```
-
-GET `/api/keywords/:group_id/:token/:keyword` -> Busca un mapeo clave-valor específico para un grupo en particular. Este endpoint lo consume únicamente el bot.
-
-PUT `/api/keywords/:group_id/:token` -> Modifica un mapeo clave-valor para un grupo, específicamente el valor de esta entrada. De no encontrar ese mapeo deuvuelve un Error 404. Recibe un JSON en el body con la siguiente forma:
+`POST /api/keywords/:group_id/:token` -> Crea un mapa palabras clave -> valor de no existir con la entrada enviada a través del body, el cual es validado. De ya existir el mapa, simplemente agrega a éste la entrada. Si ya existe el mapeo que intenta agregar retorna un Error 403. El body debe ser de la forma:
 
 ```javascript
 {
@@ -71,4 +56,15 @@ PUT `/api/keywords/:group_id/:token` -> Modifica un mapeo clave-valor para un gr
 }
 ```
 
-`/api/keywords/:group_id/:token/:keyword` -> Borra un mapeo clave-valor para el grupo dado. Si no encuentra el mapeo devuelve un Error 404.
+`GET /api/keywords/:group_id/:token/:keyword` -> Busca un mapeo clave-valor específico para un grupo en particular. Este endpoint lo consume únicamente el bot.
+
+`PUT /api/keywords/:group_id/:token` -> Modifica un mapeo clave-valor para un grupo, específicamente el valor de esta entrada. De no encontrar ese mapeo deuvuelve un Error 404. Recibe un JSON en el body con la siguiente forma:
+
+```javascript
+{
+    keyword: 'keyword value',
+    value: 'value'
+}
+```
+
+`DELETE /api/keywords/:group_id/:token/:keyword` -> Borra un mapeo clave-valor para el grupo dado. Si no encuentra el mapeo devuelve un Error 404.
