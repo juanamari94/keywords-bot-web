@@ -228,9 +228,7 @@ app.post('/api/keywords/:group_id/:token', (req, res) => {
 app.get('/api/keywords/:group_id/:token/:keyword', (req, res) => {
   
   const group_id = req.params.group_id;
-  console.log(group_id);
   const requested_keyword = req.params.keyword;
-  console.log(requested_keyword);
 
   Group.findOne({group_id: group_id}).then(group => {
 
