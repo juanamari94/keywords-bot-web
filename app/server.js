@@ -6,7 +6,9 @@ const utils = require('./utils/utils.js');
 const secrets = require('./secrets/secrets.js');
 const Group = require('./models/Group');
 const redis = require('redis');
+const cors = require('cors');
 
+app.use(cors());
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(bodyParser.json());
 mongoose.connect(secrets.MONGO_URI);
